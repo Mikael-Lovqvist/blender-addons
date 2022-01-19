@@ -46,6 +46,11 @@ GROUP_INSTANCES = 5
 BY_BLOCK = 6
 
 
+def strict_int(v):
+    'Turns floating point number into integer and asserting it is an integer'
+    assert v % 1.0 == 0.0
+    return int(v)
+
 def transform(p1, p2, c1, c2, c3):
     if PYPROJ:
         if type(p1) is Proj and type(p2) is Proj:
@@ -189,7 +194,7 @@ class Do:
     # type(self, dxf entity, blender curve data)
 
     def _cubic_bezier_closed(self, ptuple, curve):
-        count = (len(ptuple)-1)/3
+        count = strict_int((len(ptuple)-1)/3)
         points = [ptuple[-2]]
         ptuples = ptuple[:-2]
         points += [p for p in ptuples]
@@ -204,7 +209,7 @@ class Do:
             b[i].handle_right = self.proj(points[j + 1])
 
     def _cubic_bezier_open(self, points, curve):
-        count = (len(points) - 1) / 3 + 1
+        count = strict_int((len(points) - 1) / 3 + 1)
         spl = curve.splines.new('BEZIER')
         b = spl.bezier_points
         b.add(count - 1)
